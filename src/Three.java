@@ -1,4 +1,8 @@
 import java.util.Collections;
+import java.util.Comparator;
+
+//import org.labhc.btreeUtils.Value;
+
 import java.util.ArrayList;
 import java.util.BitSet;
 
@@ -48,7 +52,7 @@ public class Three {
 	 * bc is the comparator used to sort the elements of L1 and L1_dash
 	 * choose True for "strict" to find the strict relative positions of the elements of L1 in L1_dash
 	 */
-	public static void computeOffset(ArrayList<Element3> L1, ArrayList<Element3> L1_dash, ArrayList<Integer> offset, BeanComparator bc, boolean strict){
+	/*public static void computeOffset(ArrayList<Element3> L1, ArrayList<Element3> L1_dash, ArrayList<Integer> offset, BeanComparator bc, boolean strict){
 		boolean found; int j;
 		for (int i=0; i<L1.size(); i++){ //for every element in table1
 			found=false; j=0;
@@ -60,7 +64,40 @@ public class Three {
 			if (found==false) {offset.add(L1_dash.size());}
 			
 		}
+	}*/
+	
+	public static void computeOffset(ArrayList<Element3> L1, ArrayList<Element3> L1_dash, ArrayList<Integer> offset, BeanComparator bc, boolean strict){
+		for (int i = 0; i < L1.size(); i++) { // for every Value in a
+			
+			int low = 0;
+			int high = L1_dash.size() - 1;
+			
+			while (low <= high ) { 
+				int mid = (low + high) >>> 1;											
+				if (strict){
+					if (bc.compare(L1.get(i), L1_dash.get(mid)) >= 0)
+						low = mid + 1;
+					else if (bc.compare(L1.get(i), L1_dash.get(mid)) < 0)
+						high = mid - 1;
+						else{
+							offset.add(mid);
+							
+						}
+				}
+				else {
+					
+					if (bc.compare(L1.get(i), L1_dash.get(mid)) > 0)
+						low = mid + 1;
+					else if (bc.compare(L1.get(i), L1_dash.get(mid)) < 0)
+						high = mid - 1;
+						else
+							high = mid - 1;
+						
+				}
+		}
+				offset.add(low);
 	}
+}	
 	
 	//****************************************************************************************//
 	@SuppressWarnings("unchecked")
@@ -74,9 +111,9 @@ public class Three {
 		table1.add(new Element3(1,1,10,5));
 		table1.add(new Element3(2,10,50,7));
 		table1.add(new Element3(3,15,30,3));				
-		table2.add(new Element3(11,2,20,3));
-		table2.add(new Element3(12,8,40,2));
-		table2.add(new Element3(13,16,30,9));
+		table2.add(new Element3(11,2,10,3));
+		table2.add(new Element3(12,8,10,3));
+		table2.add(new Element3(13,16,10,3));
 		table2.add(new Element3(134,16,31,2));
 		table2.add(new Element3(135,16,32,1));
 		table2.add(new Element3(14,17,10,1));
@@ -133,7 +170,7 @@ public class Three {
 		computeOffset(L1, L1_dash, O1, bc_volume, false);	// O1 is the offset array of L1 w.r.t L1_dash without strict relative positions
 		computeOffset(L2,L2_dash, O2, bc_price, true); // O2 is the offset array of L2 w.r.t L2_dash with strict relative positions
 		computeOffset(L3,L3_dash, O3, bc_time, true); // O3 is the offset array of L3 w.r.t L3_dash with strict relative positions
-
+/*
 		//Initialize the bit arrays B32 and B21
 		BitSet B32= new BitSet(table2.size());
 		BitSet B21= new BitSet(table2.size());
@@ -177,7 +214,7 @@ public class Three {
 		for ( l=0; l<results.size(); l++){
 			System.out.println("("+results.get(l).get(0).getId()+","+results.get(l).get(1).getId()+")"); 
 		}
-				
+		*/		
 	}
 	
 }
